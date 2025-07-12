@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HighPerApp\HighPer\CLI\Tests\Integration;
 
 use HighPerApp\HighPer\CLI\Application;
-use HighPerApp\HighPer\CLI\Commands\ServeCommand;
 use HighPerApp\HighPer\CLI\Commands\QueueWorkCommand;
 use HighPerApp\HighPer\CLI\Commands\ScheduleRunCommand;
 use PHPUnit\Framework\TestCase;
@@ -21,22 +20,21 @@ class CommandIntegrationTest extends TestCase
     protected function setUp(): void
     {
         $this->app = new Application('TestApp', '1.0.0');
-        $this->app->add(new ServeCommand());
         $this->app->add(new QueueWorkCommand());
         $this->app->add(new ScheduleRunCommand());
     }
     
-    public function testServeCommandConfiguration(): void
+    public function testQueueWorkCommandConfiguration(): void
     {
-        $command = $this->app->find('serve');
+        $command = $this->app->find('queue:work');
         $commandTester = new CommandTester($command);
         
-        // Test with help option to avoid actually starting the server
-        $commandTester->execute(['--help' => true]);
+        // Test with help option and required adapter argument
+        $commandTester->execute(['adapter' => 'memory', '--help' => true]);
         
         $this->assertEquals(0, $commandTester->getStatusCode());
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Start the HighPer production server', $output);
+        $this->assertStringContainsString('Start processing queue jobs', $output);
     }
     
     public function testQueueWorkCommandValidation(): void
@@ -85,9 +83,11 @@ class CommandIntegrationTest extends TestCase
     {
         $commands = $this->app->all();
         
-        $this->assertArrayHasKey('serve', $commands);
         $this->assertArrayHasKey('queue:work', $commands);
         $this->assertArrayHasKey('schedule:run', $commands);
+        
+        // Verify we have the expected commands (help, list, queue:work, schedule:run + 2 more defaults)
+        $this->assertGreaterThanOrEqual(4, count($commands));
     }
     
     public function testApplicationConfigurationIntegration(): void
@@ -143,17 +143,19 @@ class CommandIntegrationTest extends TestCase
         $this->assertTrue($definition->hasOption('processes'));
     }
     
-    public function testServeCommandOptions(): void
+    public function testQueueWorkCommandArgumentsValidation(): void
     {
-        $command = $this->app->find('serve');
+        $command = $this->app->find('queue:work');
         $definition = $command->getDefinition();
         
-        // Check key options
-        $this->assertTrue($definition->hasOption('port'));
-        $this->assertTrue($definition->hasOption('workers'));
-        $this->assertTrue($definition->hasOption('env'));
-        $this->assertTrue($definition->hasOption('mode'));
-        $this->assertTrue($definition->hasOption('protocols'));
+        // Check required argument
+        $this->assertTrue($definition->hasArgument('adapter'));
+        
+        // Check key options for queue work
+        $this->assertTrue($definition->hasOption('queue'));
+        $this->assertTrue($definition->hasOption('memory'));
+        $this->assertTrue($definition->hasOption('timeout'));
+        $this->assertTrue($definition->hasOption('max-tries'));
     }
     
     public function testScheduleRunCommandOptions(): void

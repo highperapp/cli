@@ -76,16 +76,16 @@ class WorkerIntegrationTest extends TestCase
     
     public function testWorkerMemoryLimitCheck(): void
     {
-        $config = array_merge($this->baseConfig, ['memory_limit' => '1M']);
+        $config = array_merge($this->baseConfig, ['memory_limit' => '64M']);
         $worker = new QueueWorker($config);
         
         $reflection = new \ReflectionClass($worker);
         $method = $reflection->getMethod('shouldRestartDueToMemory');
         $method->setAccessible(true);
         
-        // With only 1MB limit, should likely trigger restart condition
+        // With 64MB limit, should not trigger restart condition
         $result = $method->invoke($worker);
-        $this->assertIsBool($result);
+        $this->assertFalse($result);
         
         // Test with higher limit
         $config2 = array_merge($this->baseConfig, ['memory_limit' => '1G']);

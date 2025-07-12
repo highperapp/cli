@@ -27,7 +27,7 @@ class QueueWorkCommand extends Command
     {
         $this
             ->addArgument('adapter', InputArgument::REQUIRED, 'Queue adapter (redis, rabbitmq, sqs, memory)')
-            ->addOption('queue', 'q', InputOption::VALUE_OPTIONAL, 'Queue name to process', 'default')
+            ->addOption('queue', null, InputOption::VALUE_OPTIONAL, 'Queue name to process', 'default')
             ->addOption('memory', 'm', InputOption::VALUE_OPTIONAL, 'Memory limit for worker', '128M')
             ->addOption('timeout', 't', InputOption::VALUE_OPTIONAL, 'Worker timeout in seconds', '3600')
             ->addOption('max-jobs', 'j', InputOption::VALUE_OPTIONAL, 'Maximum jobs before restart', '1000')

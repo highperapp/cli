@@ -332,7 +332,14 @@ class TaskScheduler
      */
     protected function getLockFile(ScheduledTask $task): string
     {
-        $identifier = md5(serialize($task->target) . serialize($task->parameters));
+        // Handle closures safely for lock file generation
+        $targetHash = is_callable($task->target) && !is_string($task->target) 
+            ? md5(spl_object_hash($task->target))
+            : md5(serialize($task->target));
+            
+        $paramsHash = md5(serialize($task->parameters));
+        $identifier = md5($targetHash . $paramsHash);
+        
         return $this->config['lock_path'] . "/task-{$identifier}.lock";
     }
     

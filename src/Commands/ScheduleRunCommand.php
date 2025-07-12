@@ -24,7 +24,6 @@ class ScheduleRunCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Show verbose output')
             ->addOption('no-overlap', null, InputOption::VALUE_NONE, 'Prevent overlapping scheduled tasks');
     }
     
@@ -34,7 +33,7 @@ class ScheduleRunCommand extends Command
         
         $scheduler = new TaskScheduler([
             'prevent_overlap' => $input->getOption('no-overlap'),
-            'verbose' => $input->getOption('verbose')
+            'verbose' => $output->isVerbose()
         ]);
         
         // Load scheduled tasks

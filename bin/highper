@@ -3,12 +3,9 @@
 
 declare(strict_types=1);
 
-use EaseAppPHP\HighPer\CLI\Application;
-use EaseAppPHP\HighPer\CLI\Commands\ServeCommand;
-use EaseAppPHP\HighPer\CLI\Commands\QueueWorkCommand;
-use EaseAppPHP\HighPer\CLI\Commands\ScheduleRunCommand;
-use EaseAppPHP\HighPer\CLI\Commands\ScheduleWorkCommand;
-use EaseAppPHP\HighPer\CLI\Commands\MakeCommandCommand;
+use HighPerApp\HighPer\CLI\Application;
+use HighPerApp\HighPer\CLI\Commands\QueueWorkCommand;
+use HighPerApp\HighPer\CLI\Commands\ScheduleRunCommand;
 
 if (file_exists(__DIR__ . '/../../../autoload.php')) {
     require __DIR__ . '/../../../autoload.php';
@@ -21,20 +18,13 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
     exit(1);
 }
 
-$app = new Application('HighPer Framework', '1.0.0');
-
-// Core server commands
-$app->add(new ServeCommand());
+$app = new Application('HighPer CLI', '1.0.0');
 
 // Queue worker commands
 $app->add(new QueueWorkCommand());
 
 // Scheduler commands
 $app->add(new ScheduleRunCommand());
-$app->add(new ScheduleWorkCommand());
-
-// Development commands
-$app->add(new MakeCommandCommand());
 
 // Auto-discover application commands
 if (file_exists(getcwd() . '/app/Commands')) {

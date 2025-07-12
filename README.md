@@ -4,7 +4,7 @@ CLI runtime for cron jobs, queue workers, and custom commands for HighPer Framew
 
 ## Features
 
-- 🚀 **Production-Ready Server**: High-performance server with multiple deployment modes
+- 🚀 **CLI Command Interface**: Command-line interface for HighPer Framework operations
 - ⏰ **Advanced Task Scheduling**: Cron-like job scheduling with overlap prevention
 - 🔄 **Memory-Optimized Queue Workers**: Multi-process queue processing with automatic restarts
 - 📊 **Real-time Monitoring**: Comprehensive status reporting and health checks
@@ -19,22 +19,7 @@ CLI runtime for cron jobs, queue workers, and custom commands for HighPer Framew
 composer require highperapp/cli
 ```
 
-## Server Management
-
-### Start Production Server
-
-```bash
-# Single port multiplexing (default)
-bin/highper serve --port=8080 --workers=4
-
-# Dedicated ports mode
-bin/highper serve --mode=dedicated --http-port=8080 --ws-port=8081
-
-# With performance optimizations
-bin/highper serve --c10m --rust=enabled --memory-limit=1G
-```
-
-### Queue Worker Management
+## Queue Worker Management
 
 ```bash
 # Start single queue worker
@@ -64,7 +49,6 @@ bin/highper schedule:run --no-overlap --verbose
 ```php
 <?php
 use HighPerApp\HighPer\CLI\Application;
-use HighPerApp\HighPer\CLI\Commands\ServeCommand;
 
 $app = new Application('HighPer App', '1.0.0');
 
@@ -80,10 +64,6 @@ $app->registerWorker('email_processor', function($data) {
     'timeout' => 1800,
     'max_jobs' => 500
 ]);
-
-// Configure environment
-$app->setConfig('protocols', ['http', 'websocket']);
-$app->setConfig('port', 8080);
 ```
 
 ### Queue Workers
@@ -206,21 +186,12 @@ vendor/bin/phpunit --coverage-html=coverage/html
 ## Environment Configuration
 
 ```bash
-# Server configuration
-HIGHPER_PROTOCOLS=http,websocket,grpc
-HIGHPER_PORT=8080
-HIGHPER_MODE=multiplexed
-HIGHPER_WORKER_PROCESSES=auto
-HIGHPER_MAX_CONNECTIONS=10000
-HIGHPER_MEMORY_LIMIT=512M
-
-# Performance options
-HIGHPER_RUST_FFI=auto
-HIGHPER_CRYPTO_ENGINE=auto
-HIGHPER_JSON_PARSER=auto
-
 # Application environment
 APP_ENV=production
+
+# Queue worker configuration  
+QUEUE_CONNECTION=redis
+QUEUE_DEFAULT=default
 ```
 
 ## License
