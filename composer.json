@@ -1,0 +1,45 @@
+{
+    "name": "highperapp/cli",
+    "description": "CLI runtime for cron jobs, queue workers, and custom commands for HighPer Framework",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3|^8.4",
+        "highperapp/highper-php": "^1.0",
+        "symfony/console": "^6.0",
+        "cron/cron": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "suggest": {
+        "ext-pcntl": "Process control extension for worker management",
+        "ext-posix": "POSIX extension for Unix process management"
+    },
+    "autoload": {
+        "psr-4": {
+            "HighPerApp\\HighPer\\CLI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "HighPerApp\\HighPer\\CLI\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/highper"
+    ],
+    "authors": [
+        {
+            "name": "HighPerApp Team",
+            "email": "raghuveer.dendukuri@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0-dev"
+        }
+    }
+}

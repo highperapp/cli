@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use EaseAppPHP\HighPer\CLI\Application;
+use EaseAppPHP\HighPer\CLI\Commands\ServeCommand;
+use EaseAppPHP\HighPer\CLI\Commands\QueueWorkCommand;
+use EaseAppPHP\HighPer\CLI\Commands\ScheduleRunCommand;
+use EaseAppPHP\HighPer\CLI\Commands\ScheduleWorkCommand;
+use EaseAppPHP\HighPer\CLI\Commands\MakeCommandCommand;
+
+if (file_exists(__DIR__ . '/../../../autoload.php')) {
+    require __DIR__ . '/../../../autoload.php';
+} elseif (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require __DIR__ . '/../vendor/autoload.php';
+} elseif (file_exists(__DIR__ . '/../../../../vendor/autoload.php')) {
+    require __DIR__ . '/../../../../vendor/autoload.php';
+} else {
+    fwrite(STDERR, 'Install dependencies using Composer.');
+    exit(1);
+}
+
+$app = new Application('HighPer Framework', '1.0.0');
+
+// Core server commands
+$app->add(new ServeCommand());
+
+// Queue worker commands
+$app->add(new QueueWorkCommand());
+
+// Scheduler commands
+$app->add(new ScheduleRunCommand());
+$app->add(new ScheduleWorkCommand());
+
+// Development commands
+$app->add(new MakeCommandCommand());
+
+// Auto-discover application commands
+if (file_exists(getcwd() . '/app/Commands')) {
+    $app->discoverCommands(getcwd() . '/app/Commands');
+}
+
+$app->run();
